@@ -6,7 +6,7 @@ import pickle
 from Document import Document
 from Author import Author
 from Corpus import Corpus
-
+import pandas as pd
 # Initialize Reddit API
 reddit = praw.Reddit(client_id='RGNgO8xN9cY2NBCrPipjwQ', client_secret='LePhMMz_Lw4Oya8w5s1D-Yy0eSNGyA', user_agent='ABDOURAHMANE TIMERA')
 
@@ -61,7 +61,7 @@ for nature, text, doc in corpus_plus100:
 id2doc = {i: doc.titre for i, doc in enumerate(collection)}
 
 # Build Corpus
-corpus = Corpus()
+corpus = Corpus("mon courpus")
 for doc in collection:
     corpus.add(doc)
 
@@ -74,6 +74,11 @@ with open("corpus.pkl", "wb") as f:
 with open("corpus.pkl", "rb") as f:
     loaded_corpus = pickle.load(f)
     
-print("Loaded corpus:", loaded_corpus.id2doc)
 
 
+loaded_corpus.add(Document("bonjour", "moi", "10/10/2024", "URL", "Texte"))
+
+print(type(loaded_corpus))
+
+for doc_id, doc in loaded_corpus.id2doc.items():
+    print(doc.titre)
