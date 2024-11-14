@@ -11,7 +11,7 @@ class Document :
         return f"{self.titre}, par {self.auteur}"
      
      
-    class reditDocuent(Document): # type: ignore
+class reditDocuMent(Document) : 
         def __init__(self, titre="", auteur="", date="", url="", texte="" , nbmessages=0):
             super().__init__(titre, auteur, date, url, texte)
             self.nbmessages = nbmessages
@@ -29,7 +29,7 @@ class Document :
             return f"{super().__str__()} ({self.nbmessages} messages)"
         
         
-    class ArxivDocument(Document) :  # type: ignore
+class ArxivDocument(Document) :  
         def __init__(self, titre="", auteur="", date="", url="", texte="", coauthors=[]):
             super().__init__(titre, auteur, date, url, texte)
             self.coauthors = coauthors

@@ -81,4 +81,4 @@ loaded_corpus.add(Document("bonjour", "moi", "10/10/2024", "URL", "Texte"))
 print(type(loaded_corpus))
 
 for doc_id, doc in loaded_corpus.id2doc.items():
-    print(doc.titre)
+    print(doc.titre, doc.auteur, doc.date, doc.url, doc.texte)

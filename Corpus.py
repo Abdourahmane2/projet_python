@@ -1,7 +1,7 @@
 from Author import Author
 
 class Corpus  :
-    def __init__(self):
+    def __init__(self , nom , authors = {}, aut2id = {}, id2doc = {}, ndoc = 0, naut = 0) :
         self.nom = ""
         self.authors = {}
         self.aut2id = {}
