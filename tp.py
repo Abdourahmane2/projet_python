@@ -7,11 +7,12 @@ from Document import Document
 from Author import Author
 from Corpus import Corpus
 import pandas as pd
+import re 
 # Initialize Reddit API
 reddit = praw.Reddit(client_id='RGNgO8xN9cY2NBCrPipjwQ', client_secret='LePhMMz_Lw4Oya8w5s1D-Yy0eSNGyA', user_agent='ABDOURAHMANE TIMERA')
 
 # Fetch Reddit posts
-hot_posts = reddit.subreddit('football').hot(limit=20)
+hot_posts = reddit.subreddit('football').hot(limit=100)
 texte_redit = []
 for post in hot_posts:
     texte = post.title + " " + post.selftext.replace('\n', '')
@@ -80,5 +81,58 @@ loaded_corpus.add(Document("bonjour", "moi", "10/10/2024", "URL", "Texte"))
 
 print(type(loaded_corpus))
 
-for doc_id, doc in loaded_corpus.id2doc.items():
-    print(doc.titre, doc.auteur, doc.date, doc.url, doc.texte)
+print(loaded_corpus.search("football"))
+print(loaded_corpus.concorde("football"))
+
+def nettoyer_texte(texte):
+    texte = re.sub(r'\W+', ' ', texte).lower()
+    texte = re.sub(r'\s+', ' ', texte)
+    texte = re.sub(r'[0-9]+', ' ', texte)
+    return texte
+
+doc_vocabulaire = {}
+
+#Création d'un ensemble de mots differents stocke dans un dictionnaire , avec nettoyage de texte
+for i, doc in enumerate(loaded_corpus.id2doc.values()):
+    doc.texte = nettoyer_texte(doc.texte)
+    mots = doc.texte.split()
+    for mot in mots:
+      if mot not in doc_vocabulaire:
+        doc_vocabulaire[mot] = set() 
+
+occurrences_mots = {}
+
+#compter le nomn=bre d'occurence de chaque mot dans le corpus
+for i, doc in enumerate(loaded_corpus.id2doc.values()):
+    mots = doc.texte.split()
+    for mot in mots:
+        if mot in occurrences_mots:
+            occurrences_mots[mot] += 1
+        else:
+            occurrences_mots[mot] = 1
+        doc_vocabulaire[mot].add(i)
+
+# Affichage des résultats
+"""for mot,  occurrence in occurrences_mots.items():
+    print(f"Le mot '{mot}' apparait {occurrence} fois dans le corpus")"""
+
+document_mot = {}
+#compter le nombre de document dans lequel chaque mot apparait
+for i , doc in enumerate(loaded_corpus.id2doc.values()):
+    mots = doc.texte.split()
+    for mot in mots:
+        if mot in document_mot:
+            document_mot[mot].add(i)
+        else:
+            document_mot[mot] = {i}
+
+#afficher le nombre de document qui contiennt chaque mot
+for mot, doc in document_mot.items():
+    print(f"Le mot '{mot}' apparait dans {len(doc)} documents")
+
+#afficher le nombre total de mot dans le corpus
+print(f"Le nombre total de mots dans le corpus est {sum(occurrences_mots.values())}")
+#afficher le nombre de mot dans vocabulaire
+print(f"Le nombre de mots dans le vocabulaire est {len(doc_vocabulaire)}")
+#afficher le nombre de document dans le corpus
+print(f"Le nombre de document dans le corpus est {len(loaded_corpus.id2doc)}")

@@ -1,4 +1,6 @@
+import re
 from Author import Author
+import pandas as pd
 
 class Corpus  :
     def __init__(self , nom , authors = {}, aut2id = {}, id2doc = {}, ndoc = 0, naut = 0) :
@@ -34,5 +36,32 @@ class Corpus  :
 
         return "\n".join(list(map(str, docs)))
     
+    def search(self, mot):
+        pattern = re.compile(r'\b' + re.escape(mot) + r'\b', re.IGNORECASE)
+        matches = pattern.finditer(str(self))
+        return [match.group(0) for match in matches]
+        
+    def concorde(self, mot, context_size=30):
+        pattern = re.compile(r'(.{0,' + str(context_size) + r'})\b' + re.escape(mot) + r'\b(.{0,' + str(context_size) + r'})', re.IGNORECASE)
+        matches = pattern.finditer(str(self))
+        
+        results = []
+        for match in matches:
+            left_context = match.group(1)
+            found_keyword = match.group(0)
+            right_context = match.group(2)
+            results.append((left_context, found_keyword, right_context))
+        
+        df = pd.DataFrame(results, columns=['contexte gauche', 'motif trouvé', 'contexte droit'])
+        return df
+
     
-       
+        
+    
+        
+    
+   
+    
+     
+    
+    

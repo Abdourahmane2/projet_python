@@ -42,3 +42,5 @@ class ArxivDocument(Document) :
         
         def setcoauthors(self, coauthors):
             self.coauthors = coauthors   
+            
+            
